@@ -20,7 +20,7 @@ public static class Program {
                 "\t4) View players stats\n" +
                 "\t5) Start testing\n" +
                 "\t6) Exit\n",
-                1, 5);
+                1, 6);
 
             switch (choice) {
                 case 1: // Sevens out

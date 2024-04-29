@@ -145,7 +145,8 @@ public static class Statistics {
         
         // Add the top 10 scores to a string
         string highScoresStr = "";
-        foreach (var entry in highScores[..10]) {
+        int scoresToShow = Math.Min(highScores.Count, 10);
+        foreach (var entry in highScores[..scoresToShow]) {
             highScoresStr += $"{entry.Name} ({entry.Wins} wins) {entry.Score}\n";
         }
 

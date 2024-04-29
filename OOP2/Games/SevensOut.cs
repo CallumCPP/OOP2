@@ -13,28 +13,12 @@ public class SevensOut(List<(int, int, int)>? testingRolls = null) : Game("Seven
     /// <param name="multiplayer">Whether multiplayer is enabled or not</param>
     /// <returns>Name and score of the winner and whether the game ended in a tie</returns>
     protected override (string name, int score, bool tie) _play(bool multiplayer) {
-        bool testing = testingRolls != null;
         int[] scores = [ 0, 0 ];
-        int player = 0;
 
         while (true) {
-            Console.WriteLine($"Player {player+1}'s turn with a score of {scores[player]}");
+            Console.WriteLine($"Player {_player+1}'s turn with a score of {scores[_player]}");
             
-            // If testing is disabled, and it's a players turn, ask the user
-            if (!testing && (player == 0 || multiplayer)) {
-                Console.Write("Press enter to roll your dice: ");
-                Console.ReadLine();
-            }
-            // Otherwise bot should play
-            else {
-                Console.Write("Bot is rolling");
-                for (int i = 0; i < 5; i++) {
-                    Console.Write(".");
-                    Thread.Sleep(testing ? 0 : 100);
-                }
-                
-                Console.WriteLine();
-            }
+            _waitForRoll();
             
             Console.Write($"You rolled a {_dice[0].Roll()} and a {_dice[1].Roll()} ");
             int total = _dice[0].Value + _dice[1].Value;
@@ -48,14 +32,14 @@ public class SevensOut(List<(int, int, int)>? testingRolls = null) : Game("Seven
             
             // If the player rolled a double, add twice the total to their score, otherwise jut the total
             if (_dice[0].Value == _dice[1].Value)
-                scores[player] += 2 * total;
+                scores[_player] += 2 * total;
             else
-                scores[player] += total;
+                scores[_player] += total;
             
-            Console.WriteLine($"Your new score is {scores[player]}\n");
+            Console.WriteLine($"Your new score is {scores[_player]}\n");
             
             // Switch to other player
-            player = (player + 1) % 2;
+            _player = (_player + 1) % 2;
         }
 
         Console.WriteLine("\nRolled a 7! End of game\n");
@@ -73,8 +57,10 @@ public class SevensOut(List<(int, int, int)>? testingRolls = null) : Game("Seven
             winnersTotal = scores[1];
             
             // If the bot won, don't save score
-            if (!multiplayer)
+            if (!multiplayer) {
+                Thread.Sleep(1000); // When the player is not asked for a name, give time to read the score
                 return ("", 0, false);
+            }
         }
         else {                              // Tie
             Console.WriteLine($"It's a tie! Both players got {scores[0]}");
@@ -83,7 +69,7 @@ public class SevensOut(List<(int, int, int)>? testingRolls = null) : Game("Seven
         }
         
         // Ask the user for their name if testing is disabled
-        if (!testing) {
+        if (!_testing) {
             Console.WriteLine("Enter a name to save the score: ");
             name = Console.ReadLine()!;
         }

@@ -6,6 +6,10 @@ namespace OOP2;
 /// <param name="name">Name of the game</param>
 /// <param name="testing">Whether testing is enabled</param>
 public abstract class Game(string name, bool testing) {
+    protected readonly bool _testing = testing;
+    protected bool _multiplayer { get; private set; }
+    protected int _player = 0;
+
     /// <summary>
     /// Plays the game
     /// </summary>
@@ -14,9 +18,10 @@ public abstract class Game(string name, bool testing) {
         Console.WriteLine($"Playing {name}!\n");
         
         // If testing is enabled this question will not be asked
-        bool multiplayer = !testing && Input.YesNo("Would you like to play against another player?");
+        _multiplayer = !_testing && Input.YesNo("Would you like to play against another player?");
+        Console.WriteLine();
 
-        return _play(multiplayer);
+        return _play(_multiplayer);
     }
     
     /// <summary>
@@ -25,4 +30,23 @@ public abstract class Game(string name, bool testing) {
     /// <param name="multiplayer">Whether or not to play with another player</param>
     /// <returns>Name and score of the winner and whether the game ended in a tie</returns>
     protected abstract (string name, int score, bool tie) _play(bool multiplayer);
+
+    protected void _waitForRoll() {
+        // If testing is disabled, and it's a players turn, ask the user
+        if (!_testing && (_player == 0 || _multiplayer)) {
+            Console.Write("Press enter to roll your dice: ");
+            Console.ReadLine();
+            Console.Write("\b");
+        }
+        // Otherwise bot should play
+        else {
+            Console.Write("Bot is rolling");
+            for (int i = 0; i < 5; i++) {
+                Console.Write(".");
+                Thread.Sleep(_testing ? 0 : 100);
+            }
+            
+            Console.WriteLine();
+        }
+    }
 }

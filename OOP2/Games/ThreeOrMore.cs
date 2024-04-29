@@ -7,7 +7,6 @@ namespace OOP2.Games;
 public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game("Three Or More", testingStats != null) {
     private readonly Die[] _dice = [ new Die(), new Die(), new Die(), new Die(), new Die() ];
     private readonly Random _random = new();
-    private readonly bool _testing = testingStats != null;
 
     /// <summary>
     /// Plays Three Or More
@@ -16,21 +15,11 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
     /// <returns>Name and score of the winner and whether the game ended in a tie</returns>
     protected override (string name, int score, bool tie) _play(bool multiplayer) {
         int[] scores = [0, 0];
-        int player = 0;
 
         while (true) {
-            Console.WriteLine($"Player {player+1}'s turn");
+            Console.WriteLine($"Player {_player+1}'s turn");
             
-            // If testing is disabled, and it's a players turn, ask the user
-            if (!_testing && (player == 0 || multiplayer)) {
-                Console.Write("Press enter to roll your dice: ");
-                Console.ReadLine();
-            }
-            // Otherwise bot should play
-            else {
-                Console.WriteLine("Bot is rolling...");
-                Thread.Sleep(_testing ? 0 : 300);
-            }
+            _waitForRoll();
             
             foreach (Die die in _dice)
                 die.Roll();
@@ -46,7 +35,7 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
                 
                 case 2: // Two match
                     Console.WriteLine("Two dice match!");
-                    if (player == 1 && !multiplayer)
+                    if (_player == 1 && !multiplayer)
                         _rerollDie(longestStreakVal, true);
                     else
                         _rerollDie(longestStreakVal, false);
@@ -56,7 +45,7 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
             
             // If testing is enabled save the score before augmentation
             if (_testing)
-                testingStats!.WinnerLastScores[0] = scores[player];
+                testingStats!.WinnerLastScores[0] = scores[_player];
             
             // Split into 2 switch statement since "longestStreakLen" might be changed by a streak length of 2
             int scoreAugment = 0;
@@ -77,28 +66,28 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
                     break;
             }
 
-            scores[player] += scoreAugment;
+            scores[_player] += scoreAugment;
             
             // If testing is enabled, store the score augmentation
             if (_testing) {
-                testingStats!.WinnerLastScores[1] = scores[player];
+                testingStats!.WinnerLastScores[1] = scores[_player];
                 testingStats!.StreakScores.Add((longestStreakLen, scoreAugment));
             }
 
-            Console.WriteLine($"New score is {scores[player]}\n");
+            Console.WriteLine($"New score is {scores[_player]} (+{scoreAugment})\n");
             
             // When a player reaches 20 or more, end the game
-            if (scores[player] >= 20)
+            if (scores[_player] >= 20)
                 break;
             
             // Switch player
-            player = (player + 1) % 2;
+            _player = (_player + 1) % 2;
         }
         
-        Console.WriteLine($"Player {player+1} won!");
+        Console.WriteLine($"Player {_player+1} won!");
 
         // If bot won, don't save score
-        if (!multiplayer && player == 1)
+        if (!multiplayer && _player == 1)
             return ("", 0, false);
 
         // If testing is enabled, don't save the score
@@ -108,7 +97,7 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
         Console.WriteLine("Enter your name: ");
         string name = Console.ReadLine()!;
 
-        return (name, scores[player], false);
+        return (name, scores[_player], false);
     }
 
     /// <summary>
