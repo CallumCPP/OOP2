@@ -14,8 +14,6 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
     /// <param name="multiplayer">Whether multiplayer is enabled or not</param>
     /// <returns>Name and score of the winner and whether the game ended in a tie</returns>
     protected override (string name, int score, bool tie) _play(bool multiplayer) {
-        int[] scores = [0, 0];
-
         while (true) {
             Console.WriteLine($"Player {_player+1}'s turn");
             
@@ -45,7 +43,7 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
             
             // If testing is enabled save the score before augmentation
             if (_testing)
-                testingStats!.WinnerLastScores[0] = scores[_player];
+                testingStats!.WinnerLastScores[0] = _scores[_player];
             
             // Split into 2 switch statement since "longestStreakLen" might be changed by a streak length of 2
             int scoreAugment = 0;
@@ -66,18 +64,18 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
                     break;
             }
 
-            scores[_player] += scoreAugment;
+            _scores[_player] += scoreAugment;
             
             // If testing is enabled, store the score augmentation
             if (_testing) {
-                testingStats!.WinnerLastScores[1] = scores[_player];
+                testingStats!.WinnerLastScores[1] = _scores[_player];
                 testingStats!.StreakScores.Add((longestStreakLen, scoreAugment));
             }
 
-            Console.WriteLine($"New score is {scores[_player]} (+{scoreAugment})\n");
+            Console.WriteLine($"New score is {_scores[_player]} (+{scoreAugment})\n");
             
             // When a player reaches 20 or more, end the game
-            if (scores[_player] >= 20)
+            if (_scores[_player] >= 20)
                 break;
             
             // Switch player
@@ -97,7 +95,7 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
         Console.WriteLine("Enter your name: ");
         string name = Console.ReadLine()!;
 
-        return (name, scores[_player], false);
+        return (name, _scores[_player], false);
     }
 
     /// <summary>

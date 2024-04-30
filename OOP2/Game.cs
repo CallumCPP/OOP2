@@ -6,8 +6,9 @@ namespace OOP2;
 /// <param name="name">Name of the game</param>
 /// <param name="testing">Whether testing is enabled</param>
 public abstract class Game(string name, bool testing) {
-    protected readonly bool _testing = testing;
     protected bool _multiplayer { get; private set; }
+    protected readonly bool _testing = testing;
+    protected int[] _scores = [0, 0];
     protected int _player = 0;
 
     /// <summary>
