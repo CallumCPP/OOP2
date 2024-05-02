@@ -26,8 +26,7 @@ public abstract class Game(string name, bool testing) {
         // Get a name to save the score
         string playerName = "";
         if (score != 0 && !_testing) {
-            Console.WriteLine("Enter a name to save your score: ");
-            playerName = Console.ReadLine()!;
+            playerName = Input.GetString("Enter a name to save your score: ");
         }
         
         if (!_testing)

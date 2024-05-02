@@ -111,8 +111,7 @@ public static class Program {
     /// Views a players statistics
     /// </summary>
     private static void _viewPlayersStats() {
-        Console.WriteLine("Enter the name of the player: ");
-        string playerName = Console.ReadLine()!;
+        string playerName = Input.GetString("Enter the name of the player: ");
         
         Console.Clear();
         
