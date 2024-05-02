@@ -8,7 +8,7 @@ namespace OOP2;
 public abstract class Game(string name, bool testing) {
     protected bool _multiplayer { get; private set; }
     protected readonly bool _testing = testing;
-    protected int[] _scores = [0, 0];
+    protected readonly int[] _scores = [0, 0];
     protected int _player = 0;
 
     /// <summary>

@@ -3,8 +3,8 @@ namespace OOP2.Games;
 /// <summary>
 /// Sevens Out game
 /// </summary>
-/// <param name="testingRolls">Optional, list to store rolls in for testing. If null testing will be disabled</param>
-public class SevensOut(List<(int, int, int)>? testingRolls = null) : Game("Sevens Out", testingRolls != null) {
+/// <param name="testingData">Optional, list to store rolls in for testing. If null testing will be disabled</param>
+public class SevensOut(Testing.SevensOutData? testingData = null) : Game("Sevens Out", testingData != null) {
     private readonly Die[] _dice = [ new Die(), new Die() ];
     
     /// <summary>
@@ -23,7 +23,7 @@ public class SevensOut(List<(int, int, int)>? testingRolls = null) : Game("Seven
             int total = _dice[0].Value + _dice[1].Value;
             Console.WriteLine($"totalling {total}");
 
-            testingRolls?.Add((_dice[0].Value, _dice[1].Value, total)); // Only runs when "testingStats" != null
+            testingData?.Rolls.Add((_dice[0].Value, _dice[1].Value, total)); // Only runs when "testingData" != null
             
             // If the total is 7, the game should end
             if (total == 7)

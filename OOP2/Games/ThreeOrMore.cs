@@ -4,7 +4,7 @@ namespace OOP2.Games;
 /// Three Or More game
 /// </summary>
 /// <param name="testingStats">Object to store testing stats in</param>
-public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game("Three Or More", testingStats != null) {
+public class ThreeOrMore(Testing.ThreeOrMoreData? testingStats = null) : Game("Three Or More", testingStats != null) {
     private readonly Die[] _dice = [ new Die(), new Die(), new Die(), new Die(), new Die() ];
     private readonly Random _random = new();
 
