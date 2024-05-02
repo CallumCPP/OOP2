@@ -15,9 +15,11 @@ public static class Input {
         string input = "a";
         int choice;
 
+        Console.Write(message);
+        
         // While the input is not a valid integer or is not in range keep asking the user
         while (!int.TryParse(input, out choice) || choice < min || choice > max) {
-            Console.Write(message + ": ");
+            Console.Write(": ");
             input = Console.ReadLine()!; // During regular use of this application this should never be null
         }
 
@@ -31,12 +33,23 @@ public static class Input {
     /// <returns>True if y, false if n</returns>
     public static bool YesNo(string message) {
         string input = "a";
+        
+        Console.Write(message + " ");
+        
         // While the input is not either y/n keep asking the user
         while (input != "y" && input != "n") {
-            Console.Write(message + " (y/n): ");
+            Console.Write("(y/n): ");
             input = Console.ReadLine()!;
         }
 
         return input == "y";
+    }
+    
+    /// <summary>
+    /// Waits for the user to press enter
+    /// </summary>
+    public static void WaitForEnter() {
+        Console.Write("Press enter to continue");
+        Console.ReadLine();
     }
 }

@@ -6,6 +6,11 @@ namespace OOP2;
 /// Static class holding statistics methods
 /// </summary>
 public static class Statistics {
+    private class GameStats {
+        public int Plays { get; set; }
+        public List<Player> Players { get; init; } = [];
+    }
+    
     /// <summary>
     /// Class to store player stats
     /// </summary>
@@ -15,8 +20,8 @@ public static class Statistics {
         public int Wins { get; set; }
     }
 
-    private static List<Player> _sevensOutStats = [];
-    private static List<Player> _threeOrMoreStats = [];
+    private static GameStats _sevensOutStats = new();
+    private static GameStats _threeOrMoreStats = new();
     
     /// <summary>
     /// Saves player data
@@ -33,14 +38,16 @@ public static class Statistics {
     /// Loads player data
     /// </summary>
     public static void Load() {
+        string dummyJson = JsonSerializer.Serialize(new GameStats());
+        
         if (!File.Exists("Three Or More Stats.json"))
-            File.WriteAllText("Three Or More Stats.json", "[]");
+            File.WriteAllText("Three Or More Stats.json", dummyJson);
         
         if (!File.Exists("Sevens Out Stats.json"))
-            File.WriteAllText("Sevens Out Stats.json", "[]");
+            File.WriteAllText("Sevens Out Stats.json", dummyJson);
         
-        _threeOrMoreStats = JsonSerializer.Deserialize<List<Player>>(File.ReadAllText("Three Or More Stats.json"))!;
-        _sevensOutStats = JsonSerializer.Deserialize<List<Player>>(File.ReadAllText("Sevens Out Stats.json"))!;
+        _threeOrMoreStats = JsonSerializer.Deserialize<GameStats>(File.ReadAllText("Three Or More Stats.json"))!;
+        _sevensOutStats = JsonSerializer.Deserialize<GameStats>(File.ReadAllText("Sevens Out Stats.json"))!;
     }
     
     /// <summary>
@@ -103,13 +110,16 @@ public static class Statistics {
     /// <param name="name">Name of winner</param>
     /// <param name="score">Score of winner</param>
     /// <param name="tie">Whether the game ended in a tie</param>
-    private static void _addEntry(List<Player> game, string name, int score, bool tie) {
+    private static void _addEntry(GameStats game, string name, int score, bool tie) {
+        // Add a play to the game
+        game.Plays++;
+        
         // Don't save the score if the score is 0
         if (score == 0)
             return;
         
         // Find player with the name
-        Player? player = (from entry in game
+        Player? player = (from entry in game.Players
                           where entry.Name == name
                           select entry).SingleOrDefault();
         
@@ -127,7 +137,7 @@ public static class Statistics {
                 Wins = tie ? 0 : 1
             };
 
-            game.Add(newPlayer);
+            game.Players.Add(newPlayer);
         }
     }
     
@@ -136,21 +146,21 @@ public static class Statistics {
     /// </summary>
     /// <param name="game">Game to get the statistics of</param>
     /// <returns>String containing the high scores</returns>
-    private static string _getStats(List<Player> game) {
+    private static string _getStats(GameStats game) {
         // Order all scores and get the name, number of wins, and score from each score
-        var highScores = (from entry in game
+        var highScores = (from entry in game.Players
                           from score in entry.Scores
                           orderby score descending, entry.Name
                           select new { entry.Name, entry.Wins, Score = score }).ToList();
         
         // Add the top 10 scores to a string
-        string highScoresStr = "";
+        string statsStr = $"{game.Plays} plays\n";
         int scoresToShow = Math.Min(highScores.Count, 10);
         foreach (var entry in highScores[..scoresToShow]) {
-            highScoresStr += $"{entry.Name} ({entry.Wins} wins) {entry.Score}\n";
+            statsStr += $"{entry.Name} ({entry.Wins} wins) {entry.Score}\n";
         }
 
-        return highScoresStr;
+        return statsStr;
     }
     
     /// <summary>
@@ -159,9 +169,9 @@ public static class Statistics {
     /// <param name="game">Game to get the statistics of</param>
     /// <param name="name">Name of the player</param>
     /// <returns>String containing the wins and high scores</returns>
-    private static string _getPlayerStats(List<Player> game, string name) {
+    private static string _getPlayerStats(GameStats game, string name) {
         // Get the entry with the right name, null if not found
-        Player? playerStats = (from entry in game
+        Player? playerStats = (from entry in game.Players
                                where entry.Name == name
                                select entry).SingleOrDefault();
 
@@ -170,8 +180,8 @@ public static class Statistics {
         
         // Format high scores and wins
         string playerStatsStr = $"{name} has {playerStats.Wins} wins\n";
-        playerStatsStr += "High scores:\n";
         
+        playerStatsStr += "High scores:\n";
         foreach (int score in playerStats.Scores)
             playerStatsStr += $"\t{score}\n";
         

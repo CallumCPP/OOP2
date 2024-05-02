@@ -8,6 +8,7 @@ public static class Program {
         };
         
         Statistics.Load();
+        Console.Clear();
         Console.WriteLine("OOP 2 Assessment.");
 
         bool shouldRun = true;
@@ -21,6 +22,8 @@ public static class Program {
                 "\t5) Start testing\n" +
                 "\t6) Exit\n",
                 1, 6);
+            
+            Console.Clear();
 
             switch (choice) {
                 case 1: // Sevens out
@@ -48,7 +51,7 @@ public static class Program {
                     break;
             }
             
-            Console.WriteLine();
+            Console.Clear();
         }
         
         Statistics.Save();
@@ -94,10 +97,14 @@ public static class Program {
                 case 2: // Three Or More
                     Console.WriteLine(Statistics.GetStatsTOM());
                     break;
+                
+                case 3: // Shouldn't wait for enter to exit
+                    continue;
             }
+            
+            Input.WaitForEnter();
+            Console.Clear();
         }
-        
-        Console.WriteLine("Returning to main menu...");
     }
     
     /// <summary>
@@ -107,16 +114,17 @@ public static class Program {
         Console.WriteLine("Enter the name of the player: ");
         string playerName = Console.ReadLine()!;
         
+        Console.Clear();
+        
         int choice = 1;
         while (choice != 3) {
+            Console.WriteLine($"Looking for player \"{playerName}\"");
             choice = Input.GetInt(
-                "\nWhich game would you like statistics of?\n" +
+                "Which game would you like statistics of?\n" +
                 "\t1) Sevens Out\n" +
                 "\t2) Three Or More\n" +
                 "\t3) Exit to main menu\n"
             );
-            
-            Console.WriteLine();
             
             switch (choice) {
                 case 1: // Sevens Out
@@ -126,7 +134,13 @@ public static class Program {
                 case 2: // Three Or More
                     Console.WriteLine(Statistics.GetPlayerStatsTOM(playerName));
                     break;
+                
+                case 3: // Shouldn't wait for enter to exit
+                    continue;
             }
+            
+            Input.WaitForEnter();
+            Console.Clear();
         }
     }
 }

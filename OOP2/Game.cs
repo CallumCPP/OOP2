@@ -20,17 +20,27 @@ public abstract class Game(string name, bool testing) {
         
         // If testing is enabled this question will not be asked
         _multiplayer = !_testing && Input.YesNo("Would you like to play against another player?");
-        Console.WriteLine();
 
-        return _play(_multiplayer);
+        (int score, bool tie) = _play();
+
+        // Get a name to save the score
+        string playerName = "";
+        if (score != 0 && !_testing) {
+            Console.WriteLine("Enter a name to save your score: ");
+            playerName = Console.ReadLine()!;
+        }
+        
+        if (!_testing)
+            Input.WaitForEnter();
+
+        return (playerName, score, tie);
     }
     
     /// <summary>
     /// Internal play function to be overriden by each game
     /// </summary>
-    /// <param name="multiplayer">Whether or not to play with another player</param>
     /// <returns>Name and score of the winner and whether the game ended in a tie</returns>
-    protected abstract (string name, int score, bool tie) _play(bool multiplayer);
+    protected abstract (int score, bool tie) _play();
 
     protected void _waitForRoll() {
         // If testing is disabled, and it's a players turn, ask the user
@@ -49,5 +59,13 @@ public abstract class Game(string name, bool testing) {
             
             Console.WriteLine();
         }
+    }
+    
+    /// <summary>
+    /// Shows player scores and clears the screen
+    /// </summary>
+    protected void _showScores() {
+        Console.Clear();
+        Console.WriteLine($"P1: {_scores[0]} - P2: {_scores[1]}");
     }
 }

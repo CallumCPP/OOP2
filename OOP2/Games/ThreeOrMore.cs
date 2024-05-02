@@ -11,11 +11,12 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
     /// <summary>
     /// Plays Three Or More
     /// </summary>
-    /// <param name="multiplayer">Whether multiplayer is enabled or not</param>
     /// <returns>Name and score of the winner and whether the game ended in a tie</returns>
-    protected override (string name, int score, bool tie) _play(bool multiplayer) {
+    protected override (int score, bool tie) _play() {
         while (true) {
-            Console.WriteLine($"Player {_player+1}'s turn");
+            _showScores();
+            
+            Console.WriteLine($"P{_player+1} GO");
             
             _waitForRoll();
             
@@ -33,7 +34,7 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
                 
                 case 2: // Two match
                     Console.WriteLine("Two dice match!");
-                    if (_player == 1 && !multiplayer)
+                    if (_player == 1 && !_multiplayer)
                         _rerollDie(longestStreakVal, true);
                     else
                         _rerollDie(longestStreakVal, false);
@@ -78,24 +79,21 @@ public class ThreeOrMore(Testing.ThreeOrMoreTesting? testingStats = null) : Game
             if (_scores[_player] >= 20)
                 break;
             
+            // If not in testing wait to clear the console
+            if (!_testing)
+                Input.WaitForEnter();
+            
             // Switch player
             _player = (_player + 1) % 2;
         }
         
-        Console.WriteLine($"Player {_player+1} won!");
+        Console.WriteLine($"P{_player+1} won!");
 
-        // If bot won, don't save score
-        if (!multiplayer && _player == 1)
-            return ("", 0, false);
-
-        // If testing is enabled, don't save the score
-        if (_testing)
-            return ("", 0, false);
+        // If bot won or testing is enabled, don't save score
+        if ((!_multiplayer && _player == 1) || _testing)
+            return (0, false);
         
-        Console.WriteLine("Enter your name: ");
-        string name = Console.ReadLine()!;
-
-        return (name, _scores[_player], false);
+        return (_scores[_player], false);
     }
 
     /// <summary>
