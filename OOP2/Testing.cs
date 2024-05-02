@@ -71,7 +71,7 @@ public static class Testing {
                         $"Last roll should always be 7, was {data.Rolls.Last().total}");
         
         // If this code is reached, the test passed
-        File.AppendAllText("SO Test Log.txt", $"{DateTime.Now}: Test passed");
+        File.AppendAllText("SO Test Log.txt", $"{DateTime.Now}: Test passed\n");
 
         Console.WriteLine($"Completed testing {data.GetName()}");
     }
@@ -83,7 +83,7 @@ public static class Testing {
     /// <param name="message">Message on failure</param>
     private static void _assertAndLogSO(bool condition, string message) {
         if (!condition)
-            File.AppendAllText("SO Test Log.txt", $"{DateTime.Now}: Failed with message - {message}");
+            File.AppendAllText("SO Test Log.txt", $"{DateTime.Now}: Failed with message - {message}\n");
         
         Debug.Assert(condition, $"[Sevens Out] {message}");
     }
@@ -123,7 +123,7 @@ public static class Testing {
         }
         
         // If this code is reached, the test passed
-        File.AppendAllText("TOM Test Log.txt", $"{DateTime.Now}: Test passed");
+        File.AppendAllText("TOM Test Log.txt", $"{DateTime.Now}: Test passed\n");
         
         Console.WriteLine($"Completed testing {data.GetName()}");
     }
@@ -135,7 +135,7 @@ public static class Testing {
     /// <param name="message">Message on failure</param>
     private static void _assertAndLogTOM(bool condition, string message) {
         if (!condition)
-            File.AppendAllText("TOM Test Log.txt", $"{DateTime.Now}: Failed with message - {message}");
+            File.AppendAllText("TOM Test Log.txt", $"{DateTime.Now}: Failed with message - {message}\n");
         
         Debug.Assert(condition, $"[Three Or More] {message}");
     }
